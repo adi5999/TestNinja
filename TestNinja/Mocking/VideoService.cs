@@ -8,10 +8,27 @@ using Newtonsoft.Json;
 namespace TestNinja.Mocking
 {
     public class VideoService
+        //thsi class is tightly coupled to file reader
     {
+        //by parameter
+        //public string ReadVideoTitle(IFileReader fileReader)
+        // public IFileReader FileReader { get; set; }
+        //dependecy via property
+        private IFileReader _filereader;
+        private IVideoRepository _repository;
+    public VideoService(IFileReader fileReader=null,IVideoRepository repository=null)
+        {
+            _filereader = fileReader ??new FileReader();
+            _repository = repository ??new VideoRepository();
+        }
+
+       
+
         public string ReadVideoTitle()
         {
-            var str = File.ReadAllText("video.txt");
+            //var str = File.ReadAllText("video.txt"); //made dependecy inj
+            //  var str =fileReader.Read("video.txt" );
+            var str = _filereader.Read("video.txt");
             var video = JsonConvert.DeserializeObject<Video>(str);
             if (video == null)
                 return "Error parsing the video.";
@@ -22,12 +39,9 @@ namespace TestNinja.Mocking
         {
             var videoIds = new List<int>();
             
-            using (var context = new VideoContext())
+           
             {
-                var videos = 
-                    (from video in context.Videos
-                    where !video.IsProcessed
-                    select video).ToList();
+                var videos= _repository.GetUnprocessedVideos();
                 
                 foreach (var v in videos)
                     videoIds.Add(v.Id);

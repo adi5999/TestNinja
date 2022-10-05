@@ -9,13 +9,13 @@ namespace TestNinja.Fundamentals
         public bool CanBeCancelledBy(User user)
         {
 
-            //if (user.IsAdmin || MadeBy==User )
+            return (user.IsAdmin || MadeBy == user);
             //    return true;
-            if(user.IsAdmin)
-                return true;
-            if (MadeBy == user)
-                return true;
-            return false;   
+            //if(user.IsAdmin)
+            //    return true;
+            //if (MadeBy == user)
+            //    return true;
+            //return false;   
 
 
             //return user.IsAdmin || MadeBy == user;
